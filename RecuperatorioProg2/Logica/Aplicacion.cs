@@ -33,6 +33,7 @@ namespace Logica
             Usuario usuario2 = BuscarXDni(dni2);
             if (usuario1==null || usuario2==null)
                 return new Resultado("Error, no se encontro el usuario.", false);
+
             if (usuario1.Saldo>=monto)
             {
                 usuario1.Saldo += monto;
@@ -44,6 +45,11 @@ namespace Logica
                 usuario2.ListaMovimientos.Add(nuevoMovimiento2);
                 Movimientos.Add(nuevoMovimiento1);
                 Movimientos.Add(nuevoMovimiento2);
+
+                //NO ESTA MAL PERO PUEDE HABER UN PROBLEMA DE DISEÑO.
+                //ESTA LOGICA ES DEL USUARIO Y PODRIA TENER UN METODO CREARTRANSACCION QUE HAGA LAS DOS COSAS
+                //AGREGAR A LA LISTA Y MODIFICAR EL SALDO EN EL MISMO METODO
+
                 return new Resultado(true, "Se realizo el movimiento.");
             }
             return new Resultado("Saldo insuficiente.", false);
@@ -59,6 +65,9 @@ namespace Logica
                 movimiento2 = new Movimiento($"CANCELACION: {movimiento2.Descripcion}", movimiento2.Monto * -1);
                 Movimientos.Add(movimiento1);
                 Movimientos.Add(movimiento2);
+
+                //NO ACTUALIZA LOS SALDOS
+
                 return new Resultado(true, "Movimiento cancelado.");
             }
             return new Resultado("No se pudo realizar el movimiento.", false);
@@ -71,10 +80,13 @@ namespace Logica
                 return null;
             else
             {
+                //ESTO NO ORDENA SI NO ASIGNA A UNA VARIABLE
                 usuarioEncontrado.ListaMovimientos.OrderByDescending(x => x.Fecha);
                 return usuarioEncontrado.ListaMovimientos;
             }
         }
+        //NO ES UN METODO NECESARIO. PUEDE RESOLVERSE EN 1 LINEA
+        //EN TODO CASO DEBERIA SER PRIVADO
         public Usuario BuscarXDni(string dni)
         {
             if (Usuarios.Find(x => x.DNI == dni) == null)

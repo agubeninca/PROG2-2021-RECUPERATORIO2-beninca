@@ -15,13 +15,7 @@ namespace RecuperatorioProg2.Controllers
         {
             this.aplicacion = aplicacion ?? Aplicacion.Instance;
         }
-
-        // GET: api/Movimiento
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
+       
         // GET: api/Movimiento/5
         public IHttpActionResult Get(string dni)
         {
@@ -33,17 +27,23 @@ namespace RecuperatorioProg2.Controllers
         }
 
         // POST: api/Movimiento
+        //PODRIA USAR UNA CLASE REQUEST PARA NO RECIBIR LOS PARAMETROS POR SEPARADO
         public IHttpActionResult Post(string dni1, string dni2, string descripcion, decimal monto)
         {
+            //DEBERIA CREAR UNA CLASE PARA PASAR A LA LOGICA DE NEGOCIO Y NO LOS PARAMETROS POR SEPARADO
             Resultado movimiento = aplicacion.ComprobarNuevoMovimiento(dni1, dni1, descripcion, monto);
+
             if (movimiento != null)
             {
                 return Content(HttpStatusCode.Created, "");
             }
+
+            //DEBERIA RETORNAR EL MOTIVO DEL BADREQUEST AL CLIENTE
             return Content(HttpStatusCode.BadRequest, "");
         }
 
         // PUT: api/Movimiento/5
+        //PUEDE ELIMINARSE SI NO ES NECESARIO
         public void Put(int id, [FromBody]string value)
         {
         }
@@ -52,6 +52,7 @@ namespace RecuperatorioProg2.Controllers
         public IHttpActionResult Delete(int id1, int id2)
         {
             Resultado movimiento = aplicacion.CancelarMovimientoPorID(id1, id2);
+
             if (movimiento == null)
                 return Content(HttpStatusCode.NotFound, movimiento);
             else
